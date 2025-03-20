@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+}
+.appcontainer {
+  display: flex;
+  min-height: 100vh;
+}
+.leftPanel {
+  width: 20%;
+  min-height: 100%;
+}
+.rightPanel {
+  width: 80%;
+
+  min-height: 100%;
+  margin: 40px;
+}
+.leftPanel {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  padding: 20px;
+  width: 200px;
+  height: 100vh;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.leftPanel ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.leftPanel li {
+  margin-bottom: 10px;
+}
+
+.leftPanel a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  display: block;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.leftPanel a:hover {
+  background-color: #4caf50;
+  color: white;
+}

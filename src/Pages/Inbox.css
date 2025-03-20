@@ -1,0 +1,81 @@
+.inbox {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.inbox h1 {
+  text-align: center;
+  color: #333;
+}
+
+.request-counts {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.request-counts .raised-requests,
+.request-counts .closed-requests {
+  flex: 1;
+  text-align: center;
+}
+
+.raise-request-button {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.raise-request-link {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.raise-request-link:hover {
+  background-color: #45a049;
+}
+
+.search-box {
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.requests-table th,
+.requests-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.requests-table th {
+  background-color: #f2f2f2;
+}
+
+.requests-table button {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.requests-table button:hover {
+  background-color: #45a049;
+}
