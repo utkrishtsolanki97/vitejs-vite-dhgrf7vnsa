@@ -266,7 +266,7 @@ const Preview = ({ loggedInUser }) => {
 
                             </div>
                           ) : (
-                            <button>Reminder</button>
+                            <button button className="download-pdf-btn"  >Reminder</button>
                           )}
                         </li>
                       ))}
@@ -275,8 +275,8 @@ const Preview = ({ loggedInUser }) => {
                 ) : null}
                 {data.action_on.includes(loggedInUser.userName) && (
                   <>
-                    <button onClick={() => handleRequestMoreInfo(re.reName)}>Request More Information</button>
-                    <button onClick={() => handleNoFurtherInfo(re.reName)}>No Further Information Required</button>
+                    <button button className="download-pdf-btn"   onClick={() => handleRequestMoreInfo(re.reName)}>Request More Information</button>
+                    <button button className="download-pdf-btn"   onClick={() => handleNoFurtherInfo(re.reName)}>No Further Information Required</button>
                   </>
                 )}
                 {showInfoRequestInput && (
@@ -287,14 +287,14 @@ const Preview = ({ loggedInUser }) => {
                       value={infoRequest}
                       onChange={(e) => setInfoRequest(e.target.value)}
                     />
-                    <button onClick={() => handleSubmitRequest(showInfoRequestInput)}>Submit Request</button>
+                    <button button className="download-pdf-btn"   onClick={() => handleSubmitRequest(showInfoRequestInput)}>Submit Request</button>
                   </div>
                 )}
               </div>
             ) : (
               <div>
                 <p>Status: Action Not Taken</p>
-                <button>Reminder</button>
+                <button button className="download-pdf-btn"  >Reminder</button>
               </div>
             )}
           </div>
@@ -369,7 +369,7 @@ const Preview = ({ loggedInUser }) => {
         </div>
       ))}
 
-      {data.close_request !== 1 && <button onClick={handleCloseRequest}>Close This Request</button>}
+      {loggedInUser.role==='FIU' &&  data.close_request !== 1 && <button button className="download-pdf-btn"   onClick={handleCloseRequest}>Close This Request</button>}
     </div>
   );
 }
