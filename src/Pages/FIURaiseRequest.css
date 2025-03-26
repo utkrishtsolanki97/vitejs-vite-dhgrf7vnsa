@@ -1,3 +1,5 @@
+
+
 .fiu-raise-request {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -69,7 +71,7 @@
 .files-table button {
   padding: 10px 20px;
   margin-right: 10px;
-  background-color: #4caf50;
+  background-color: darkgrey;
   color: white;
   border: none;
   border-radius: 4px;
@@ -80,7 +82,7 @@
 .submit-btn:hover,
 .preview-btn:hover,
 .files-table button:hover {
-  background-color: #45a049;
+  background-color: darkgrey;
 }
 
 .action-requested-section .action-details {
@@ -109,4 +111,40 @@
 .preview-section .preview-item textarea {
   background-color: #f9f9f9;
   cursor: not-allowed;
+}
+
+
+.multi-select {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.multi-select div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.multi-select input[type='checkbox'] {
+  margin-right: 10px;
+}
+
+.multi-select label {
+  font-weight: normal;
+  color: #333;
+}
+
+.re-select
+  {
+    height: 80%;
+    overflow: auto;
+    padding: 20px;
+}
+
+.re-select-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid black;
 }

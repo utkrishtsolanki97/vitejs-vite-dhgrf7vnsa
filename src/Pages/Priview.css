@@ -57,7 +57,7 @@
 
 .download-pdf-btn {
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: darkgrey;
   color: white;
   border: none;
   border-radius: 4px;
@@ -66,7 +66,7 @@
 }
 
 .download-pdf-btn:hover {
-  background-color: #45a049;
+  background-color: darkgrey;
 }
 
 .acknowledged-section {

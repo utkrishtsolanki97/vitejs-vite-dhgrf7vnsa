@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Inbox.css';
 
-const Inbox = () => {
+const Inbox = ({ loggedInUser }) => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRequests, setFilteredRequests] = useState([]);
@@ -11,13 +11,17 @@ const Inbox = () => {
 
   useEffect(() => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    setRequests(storedRequests);
-    setFilteredRequests(storedRequests);
+    const userRequests = storedRequests.filter(request =>
+      request.action_on && request.action_on.includes(loggedInUser?.userName)
+    );
+    console.log(loggedInUser?.userName,storedRequests.map(req => req.action_on))
+    setRequests(userRequests);
+    setFilteredRequests(userRequests);
     setRaisedRequestsCount(storedRequests.length);
     setClosedRequestsCount(
-      storedRequests.filter((req) => req.closed_request === 1).length
+      userRequests.filter((req) => req.closed_request === 1).length
     );
-  }, []);
+  }, [loggedInUser]);
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -59,10 +63,12 @@ const Inbox = () => {
           <tr>
             <th>Srl No.</th>
             <th>Title</th>
-            <th>Req Id</th>
-            <th>Req By</th>
+            <th>Req ID</th>
             <th>Priority</th>
-            <th>ETA (End Date)</th>
+            <th>RE Type (Count)</th>
+            <th>Pending RE</th>
+            <th>Action Taken RE</th>
+            <th>End Date</th>
             <th>View</th>
           </tr>
         </thead>
@@ -72,13 +78,15 @@ const Inbox = () => {
               <td>{index + 1}</td>
               <td>{`FIU Notice ${req.selectedAction}`}</td>
               <td>
-                <b>FIU_{index + 1}</b>
+                <b>FIU_{req.id}</b>
               </td>
-              <td>System</td>
               <td>{req.priority}</td>
+              <td>{`${req.selectedReType} (${req.selectedREs.length})`}</td>
+              <td>{req.selectedREs.filter(re => !re.reply).length}</td>
+              <td>{req.selectedREs.filter(re => re.reply).length}</td>
               <td>{req.endDate}</td>
               <td>
-                <Link to={`/preview/${index}`}>View</Link>
+                <Link to={`/preview/${req.id}`}>View</Link>
               </td>
             </tr>
           ))}

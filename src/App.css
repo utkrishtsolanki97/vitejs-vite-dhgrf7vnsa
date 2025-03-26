@@ -23,7 +23,7 @@ body {
   height: 100vh;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
-
+/* 
 .leftPanel ul {
   list-style-type: none;
   padding: 0;
@@ -45,5 +45,24 @@ body {
 
 .leftPanel a:hover {
   background-color: #4caf50;
+  color: white;
+} */
+
+.leftPanel ul li {
+  list-style: none;
+  margin: 10px 0;
+}
+
+.leftPanel ul li a {
+  text-decoration: none;
+  color: black;
+  padding: 10px;
+  display: block;
+  border-radius: 5px;
+}
+
+.leftPanel ul li a:hover,
+.leftPanel ul li.active a {
+  background-color: darkgrey;
   color: white;
 }

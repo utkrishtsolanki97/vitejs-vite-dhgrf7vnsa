@@ -2,35 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './REInbox.css';
 
-const REInbox = () => {
-  // const [requests, setRequests] = useState([]);
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const [filteredRequests, setFilteredRequests] = useState([]);
+const REInbox = ({ loggedInUser }) => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRequests, setFilteredRequests] = useState([]);
-  const [raisedRequestsCount, setRaisedRequestsCount] = useState(0);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
   const [closedRequestsCount, setClosedRequestsCount] = useState(0);
-
-  // useEffect(() => {
-  //   const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-  //   const filteredRequests = storedRequests.filter((req) => !req.action_taken);
-  //   setRequests(filteredRequests);
-  //   setFilteredRequests(filteredRequests);
-  // }, []);
 
   useEffect(() => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const raisedRequests = storedRequests.filter((req) => !req.action_taken);
+    const pendingRequests = storedRequests.filter(
+      (req) =>
+        req.selectedREs.some(re => re.reName === loggedInUser.userName) &&
+        req.action_on && req.action_on.includes(loggedInUser.userName)
+    );
     const closedRequests = storedRequests.filter(
-      (req) => req.action_taken === 1
+      (req) =>
+        req.selectedREs.some(re => re.reName === loggedInUser.userName) &&
+        (!req.action_on || !req.action_on.includes(loggedInUser.userName))
     );
 
-    setRequests(raisedRequests);
-    setFilteredRequests(raisedRequests);
-    setRaisedRequestsCount(raisedRequests.length);
+    setRequests(pendingRequests);
+    setFilteredRequests(pendingRequests);
+    setPendingRequestsCount(pendingRequests.length);
     setClosedRequestsCount(closedRequests.length);
-  }, []);
+  }, [loggedInUser.userName]);
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -46,13 +42,9 @@ const REInbox = () => {
   return (
     <div className="inbox">
       <h1>Inbox</h1>
-      {/* <div className="request-counts">
-        <p>Raised Requests: {raisedRequestsCount}</p>
-        <p>Closed Requests: {closedRequestsCount}</p>
-      </div> */}
       <div className="request-counts">
-        <div className="raised-requests">
-          <h3>Raised Requests: {raisedRequestsCount}</h3>
+        <div className="pending-requests">
+          <h3>Pending Requests: {pendingRequestsCount}</h3>
         </div>
         <div className="closed-requests">
           <h3>Closed Requests: {closedRequestsCount}</h3>
@@ -71,8 +63,8 @@ const REInbox = () => {
           <tr>
             <th>Srl No.</th>
             <th>Title</th>
-            <th>Req Id</th>
-            <th>Req By</th>
+            <th>Req ID</th>
+            <th>Requested By</th>
             <th>Priority</th>
             <th>ETA (End Date)</th>
             <th>View</th>
@@ -84,13 +76,13 @@ const REInbox = () => {
               <td>{index + 1}</td>
               <td>{`FIU Notice ${req.selectedAction}`}</td>
               <td>
-                <b>FIU_{index + 1}</b>
+                <b>FIU_{req.id}</b>
               </td>
-              <td>System</td>
+              <td>{req.username}</td>
               <td>{req.priority}</td>
               <td>{req.endDate}</td>
               <td>
-                <Link to={`/re-priview/${index}`}>View</Link>
+                <Link to={`/re-priview/${req.id}`}>View</Link>
               </td>
             </tr>
           ))}

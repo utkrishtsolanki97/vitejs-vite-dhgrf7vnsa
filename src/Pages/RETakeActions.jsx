@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import './RETakeActions.css';
 import { useNavigate } from 'react-router-dom';
 
-const RETakeActions = () => {
+const RETakeActions = ({ loggedInUser }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [data, setData] = useState(null);
@@ -15,7 +15,7 @@ const RETakeActions = () => {
 
   useEffect(() => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestData = storedRequests[id];
+    const requestData = storedRequests.find(req => req.id === parseInt(id));
     setData(requestData);
   }, [id]);
 
@@ -49,8 +49,11 @@ const RETakeActions = () => {
   const handleAcknowledge = () => {
     setAcknowledged(true);
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    storedRequests[id].acknowledged = 1;
-    localStorage.setItem('requests', JSON.stringify(storedRequests));
+    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    if (requestIndex !== -1) {
+      storedRequests[requestIndex].acknowledged = 1;
+      localStorage.setItem('requests', JSON.stringify(storedRequests));
+    }
   };
 
   const handleTakeAction = () => {
@@ -64,19 +67,87 @@ const RETakeActions = () => {
 
   const handleSubmit = () => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    storedRequests[id].reply = reply;
-    storedRequests[id].documents_uploaded_by_re = files.map(
-      (file) => file.name
-    );
-    storedRequests[id].action_taken = 1;
-    localStorage.setItem('requests', JSON.stringify(storedRequests));
-    navigate('/re-inbox');
+    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    if (requestIndex !== -1) {
+      const request = storedRequests[requestIndex];
+
+      // Update the reply and documents in the selectedREs object
+      request.selectedREs = request.selectedREs.map(re => {
+        if (re.reName === loggedInUser.userName) {
+          return {
+            ...re,
+            reply,
+            documents: files.map(file => file.name)
+          };
+        }
+        return re;
+      });
+
+      // Remove the username from action_on
+      request.action_on = request.action_on.filter(user => user !== loggedInUser.userName);
+
+      // Add 'fiu' to action_on if not already present
+      if (!request.action_on.includes('fiu')) {
+        request.action_on.push('fiu');
+      }
+
+      // Update the request in localStorage
+      storedRequests[requestIndex] = request;
+      localStorage.setItem('requests', JSON.stringify(storedRequests));
+
+      navigate('/re-inbox');
+    }
+  };
+
+  
+  const handleRFISubmit = (rfi) => {
+    const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
+    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    if (requestIndex !== -1) {
+      const request = storedRequests[requestIndex];
+  
+      // Update the RFI reply and documents in the selectedREs object
+      request.selectedREs = request.selectedREs.map(re => {
+        if (re.reName === loggedInUser.userName) {
+          return {
+            ...re,
+            RFI: re.RFI.map(rfiItem => {
+              if (rfiItem.id === rfi.id) {
+                return {
+                  ...rfiItem,
+                  re_reply: reply,
+                  re_docs: files.map(file => file.name)
+                };
+              }
+              return rfiItem;
+            })
+          };
+        }
+        return re;
+      });
+  
+      // Remove the username from action_on
+      request.action_on = request.action_on.filter(user => user !== loggedInUser.userName);
+  
+      // Add 'fiu' to action_on if not already present
+      if (!request.action_on.includes('fiu')) {
+        request.action_on.push('fiu');
+      }
+  
+      // Update the request in localStorage
+      storedRequests[requestIndex] = request;
+      localStorage.setItem('requests', JSON.stringify(storedRequests));
+  
+      navigate('/re-inbox');
+    }
   };
 
   if (!data) {
     return <div>Loading...</div>;
   }
 
+
+  console.log(data?.selectedREs?.filter(re => re.reName === loggedInUser.userName)[0].reply === '');
   return (
     <div className="preview-section">
       <h2>
@@ -87,10 +158,6 @@ const RETakeActions = () => {
         <div className="preview-item">
           <label>RE Type</label>
           <input type="text" value={data.selectedReType} disabled />
-        </div>
-        <div className="preview-item">
-          <label>RE</label>
-          <input type="text" value={data.selectedRE} disabled />
         </div>
         <div className="preview-item">
           <h3>Identifiers</h3>
@@ -160,50 +227,114 @@ const RETakeActions = () => {
       <button className="download-pdf-btn" onClick={handleDownloadPDF}>
         Download as PDF
       </button>
-      {!acknowledged && (
-        <button className="acknowledge-btn" onClick={handleAcknowledge}>
-          Acknowledge
-        </button>
-      )}
-      {acknowledged && !takingAction && (
-        <button className="take-action-btn" onClick={handleTakeAction}>
-          Take Action
-        </button>
-      )}
-      {takingAction && (
-        <div className="action-section">
-          <div className="reply-section">
-            <label>Reply</label>
-            <textarea
-              value={reply}
-              onChange={(e) => setReply(e.target.value)}
-            />
-          </div>
-          <div className="upload-docs-section">
-            <h3>Upload Supporting Docs</h3>
-            <input type="file" multiple onChange={handleFileChange} />
-            {files.length > 0 && (
-              <table className="files-table">
-                <thead>
-                  <tr>
-                    <th>File Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {files.map((file, index) => (
-                    <tr key={index}>
-                      <td>{file.name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-          <button className="submit-btn" onClick={handleSubmit}>
-            <Link to="/re-inbox">Submit</Link>
-          </button>
+      <br />
+      {data.selectedREs.filter(re => re.reName === loggedInUser.userName).map((re, reIndex) => (
+        <div key={reIndex} style={{ margin: "20px", padding: "20px", border: "1px solid black" }}>
+          {re.reName === loggedInUser.userName && (
+            <div>
+              {re.reply && (
+                <div className="action-taken-section">
+                  <h3>Reply</h3>
+                  <input type="text" value={re.reply} disabled />
+                  <h3>Documents Uploaded by RE</h3>
+                  <table className="files-table">
+                    <thead>
+                      <tr>
+                        <th>File Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {re.documents.map((file, index) => (
+                        <tr key={index}>
+                          <td>{file}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {re.RFI && re.RFI.length > 0 && (
+                    <div>
+                      <h4>Information Requested : </h4>
+                      <ul>
+                        {re.RFI.map((rfi, rfiIndex) => (
+                          <li key={rfiIndex}>
+                            {rfi.info_required}
+                            {rfi.re_reply ? (
+                              <div>
+                                <h4>Reply</h4>
+                                <input type="text" value={rfi.re_reply} disabled />
+                                <h4>Documents Uploaded by RE</h4>
+                                <table className="files-table">
+                                  <thead>
+                                    <tr>
+                                      <th>File Name</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {rfi.re_docs.map((file, index) => (
+                                      <tr key={index}>
+                                        <td>{file}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div>
+                                <label>Reply</label>
+                                <textarea
+                                  value={reply}
+                                  onChange={(e) => setReply(e.target.value)}
+                                />
+                                <label>Upload Documents</label>
+                                <input type="file" multiple onChange={handleFileChange} />
+                                <button className="submit-btn" onClick={() => handleRFISubmit(rfi)}>
+                                  Submit Reply
+                                </button>
+                              </div>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      ))}
+      {data.selectedREs.filter(re => re.reName === loggedInUser.userName)[0].reply === '' && <div className="action-section">
+        <div className="reply-section">
+          <label>Reply</label>
+          <textarea
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+          />
+        </div>
+        <div className="upload-docs-section">
+          <h3>Upload Supporting Docs</h3>
+          <input type="file" multiple onChange={handleFileChange} />
+          {files.length > 0 && (
+            <table className="files-table">
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {files.map((file, index) => (
+                  <tr key={index}>
+                    <td>{file.name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        <button className="submit-btn" onClick={handleSubmit}>
+          Submit Reply
+        </button>
+      </div>}
     </div>
   );
 };

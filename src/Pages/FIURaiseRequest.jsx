@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import './FIURaiseRequest.css';
 import { Link } from 'react-router-dom';
 
-const FIURaiseRequest = () => {
+const FIURaiseRequest = ({loggedInUser}) => {
   const [selectedReType, setSelectedReType] = useState('');
   const [selectedRE, setSelectedRE] = useState('');
+  const [selectedREs, setSelectedREs] = useState([]);
   const [reDropdownValues, setREDropdownValues] = useState([]);
   const [identifiers, setIdentifiers] = useState([]);
   const [idCounter, setIdCounter] = useState(1);
@@ -16,8 +17,13 @@ const FIURaiseRequest = () => {
   const [endDate, setEndDate] = useState('');
   const [files, setFiles] = useState([]);
   const [preview, setPreview] = useState(false);
+  const [openModal, setOpenModal] = useState(false)
 
   const reData = {
+    'Virtual Asset Service Provider': [
+      'Test Virtual Asset Service Provider',
+      'Manendra Jain',
+    ],
     Bank: [
       'UCO Bank',
       'Azad Test',
@@ -233,10 +239,7 @@ const FIURaiseRequest = () => {
       'TRIVENI MANAGEMENT CONSULTANCY SERVICES LIMITED',
       'Brokerage Firms Test',
     ],
-    'Virtual Asset Service Provider': [
-      'Test Virtual Asset Service Provider',
-      'Manendra Jain',
-    ],
+    
     'Dealers in Precious Metals and Stones': [
       'Test RE DPMS',
       'Test Flow DPMS',
@@ -264,6 +267,7 @@ const FIURaiseRequest = () => {
   };
 
   const retype = [
+    'Virtual Asset Service Provider',
     'Bank',
     'Body of Associations',
     'Brokerage Firms',
@@ -283,29 +287,50 @@ const FIURaiseRequest = () => {
     'Real Estate',
     'Regulator',
     'Statutory Bodies',
-    'Virtual Asset Service Provider',
+    
   ];
 
   const handleReTypeSelect = (reType) => {
+    console.log(reType.target.value,reData[reType.target.value] || []);
     setSelectedReType(reType.target.value);
     setREDropdownValues(reData[reType.target.value] || []);
   };
 
+
+  // const handleReSelect = (re) => {
+  //   setSelectedRE(re.target.value);
+  // };
+
   const handleReSelect = (re) => {
-    setSelectedRE(re.target.value);
+    const value = re.target.value;
+    setSelectedREs((prevSelectedREs) =>
+      prevSelectedREs.includes(value)
+        ? prevSelectedREs.filter((re) => re !== value)
+        : [...prevSelectedREs, value]
+    );
   };
 
   const idTypes = [
+    'VPA (Virtual Payment Address)',
+    'Account Number',
+    'Mobile Number',
+    'Wallet Address',
+    'IFSC Code',
     'aadhar card',
     'pan',
     'driving license',
-    'Account Number',
-    'Mobile Number',
     'Name',
+    'email',
+    'Others'
   ];
 
+  // const handleAddIdentifier = () => {
+  //   setIdentifiers([...identifiers, { id: idCounter, idType: '', value: '' }]);
+  //   setIdCounter(idCounter + 1);
+  // };
+
   const handleAddIdentifier = () => {
-    setIdentifiers([...identifiers, { id: idCounter, idType: '', value: '' }]);
+    setIdentifiers([...identifiers, { id: idCounter, idType: '', value: '', otherValue: '' }]);
     setIdCounter(idCounter + 1);
   };
 
@@ -361,10 +386,48 @@ const FIURaiseRequest = () => {
     setPreview(true);
   };
 
+
+  // const handleFinalSubmit = () => {
+  //   const data = {
+  //     selectedReType,
+  //     selectedREs,
+  //     identifiers,
+  //     selectedAction,
+  //     otherAction,
+  //     description,
+  //     priority,
+  //     endDate,
+  //     files: files.map((file) => file.name),
+  //   };
+  //   const existingData = JSON.parse(localStorage.getItem('requests')) || [];
+  //   existingData.push(data);
+  //   localStorage.setItem('requests', JSON.stringify(existingData));
+  //   console.log('Data saved to local storage:', data);
+  // };
   const handleFinalSubmit = () => {
-    const data = {
+    // Retrieve the existing requests from localStorage
+    const existingData = JSON.parse(localStorage.getItem('requests')) || [];
+  
+    // Generate a new ID for the request
+    const newId = existingData.length > 0 ? existingData[existingData.length - 1].id + 1 : 1;
+  
+    // Format the selectedREs as an array of objects
+    const formattedREs = selectedREs.map((re) => ({
+      reName: re.replace(/\s+/g, ''), // Remove spaces from the RE name
+      reply: '',
+      documents: [],
+      action: 're',
+      name: re
+    }));
+    const action_on = selectedREs.map((re) => (re.replace(/\s+/g, '')));
+  
+    // Create the new request object
+    const newRequest = {
+      id: newId,
+      role: loggedInUser.role,
+      username: loggedInUser.userName,
       selectedReType,
-      selectedRE,
+      selectedREs: formattedREs,
       identifiers,
       selectedAction,
       otherAction,
@@ -372,13 +435,16 @@ const FIURaiseRequest = () => {
       priority,
       endDate,
       files: files.map((file) => file.name),
+      action_on 
     };
-
-    const existingData = JSON.parse(localStorage.getItem('requests')) || [];
-    existingData.push(data);
+  
+    // Add the new request to the existing data
+    existingData.push(newRequest);
+  
+    // Save the updated data to localStorage
     localStorage.setItem('requests', JSON.stringify(existingData));
-
-    console.log('Data saved to local storage:', data);
+  
+    console.log('Data saved to local storage:', newRequest);
   };
 
   return (
@@ -401,80 +467,134 @@ const FIURaiseRequest = () => {
                 ))}
               </select>
             </div>
-
-            {reDropdownValues.length > 0 && (
-              <div className="re-select">
+            <div className="re-type-select">
+            <label>RE Type</label>
+            <button
+              onClick={()=> setOpenModal(true)}
+              className="add-identifier-btn"
+            >
+              {selectedREs.length>0 ? `${selectedREs.length} RE Selected` : 'Select RE'}
+            </button>
+            </div>
+            {openModal && <div style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#00000080",
+            }}>
+              <div style={{
+                width: "80%",
+                maxWidth: "900px",
+                border: "1px solid black",
+                margin: "10px auto",
+                textAlign: "center",
+                borderRadius: "10px",
+                height: "90vh",
+                justifyContent: "center",
+                background: "white",
+                
+              }}>
+                <div className='re-select-header'>
                 <label>RE</label>
-                <select value={selectedRE} onChange={handleReSelect}>
-                  <option value="">Select RE</option>
-                  {reDropdownValues.map((re) => (
-                    <option key={re} value={re}>
-                      {re}
-                    </option>
-                  ))}
-                </select>
+                <button className="add-identifier-btn"
+              onClick={()=> setOpenModal(false)}
+            >
+              Close
+            </button>
+                </div>
+                {reDropdownValues.length > 0 && (
+                  <div className="re-select">
+                    
+                    <div className="multi-select" style={{overflow: "auto"}}>
+                      {reDropdownValues.map((re) => (
+                        <div key={re}>
+                          <input
+                            type="checkbox"
+                            value={re}
+                            checked={selectedREs.includes(re)}
+                            onChange={handleReSelect}
+                          />
+                          <label>{re}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>}
           </div>
 
           <div className="identifiers-section">
-            <h2>Add Identifiers</h2>
-            <table className="identifiers-table">
-              <thead>
-                <tr>
-                  <th>Srl No</th>
-                  <th>Id Type</th>
-                  <th>Value</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {identifiers.map((identifier, index) => (
-                  <tr key={identifier.id}>
-                    <td>{identifier.id}</td>
-                    <td>
-                      <select
-                        value={identifier.idType}
-                        onChange={(e) =>
-                          handleInputChange(index, 'idType', e.target.value)
-                        }
-                      >
-                        <option value="">Select Id Type</option>
-                        {idTypes.map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        value={identifier.value}
-                        onChange={(e) =>
-                          handleInputChange(index, 'value', e.target.value)
-                        }
-                      />
-                    </td>
-                    <td>
-                      <button onClick={() => handleDeleteIdentifier(index)}>
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <button
-              className="add-identifier-btn"
-              onClick={handleAddIdentifier}
-            >
-              Add Identifier
-            </button>
-            {/* <button className="submit-btn" onClick={handleSubmit}>
-              Submit
-            </button> */}
-          </div>
+        <h2>Add Identifiers</h2>
+        <table className="identifiers-table">
+          <thead>
+            <tr>
+              <th>Srl No</th>
+              <th>Id Type</th>
+              <th>Value</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {identifiers.map((identifier, index) => (
+              <tr key={identifier.id}>
+                <td>{identifier.id}</td>
+                <td style={{display:"flex", padding:"10px"}}>
+                  <select
+                    value={identifier.idType}
+                    onChange={(e) =>
+                      handleInputChange(index, 'idType', e.target.value)
+                    }
+                  >
+                    <option value="">Select Id Type</option>
+                    {idTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                  {identifier.idType === 'Others' && <input
+                      type="text"
+                      value={identifier.otherValue}
+                      onChange={(e) =>
+                        handleInputChange(index, 'otherValue', e.target.value)
+                      }
+                      placeholder="Specify other identifier"
+                      required
+                    />}
+                </td>
+                <td>
+                  
+                    <input
+                      type="text"
+                      value={identifier.value}
+                      onChange={(e) =>
+                        handleInputChange(index, 'value', e.target.value)
+                      }
+                      required
+                    />
+                </td>
+                <td>
+                  <button onClick={() => handleDeleteIdentifier(index)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <button className="add-identifier-btn" onClick={handleAddIdentifier}>
+          Add Identifier
+        </button>
+        {/* <button className="submit-btn" onClick={handleSubmit}>
+          Submit
+        </button> */}
+      </div>
 
           <div className="action-requested-section">
             <h2>Action Requested</h2>
@@ -515,9 +635,9 @@ const FIURaiseRequest = () => {
                 <label>Priority</label>
                 <select value={priority} onChange={handlePriorityChange}>
                   <option value="">Select Priority</option>
-                  <option value="P1">P1</option>
-                  <option value="P2">P2</option>
-                  <option value="P3">P3</option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
                 </select>
               </div>
 
@@ -576,7 +696,7 @@ const FIURaiseRequest = () => {
             </div>
             <div className="preview-item">
               <label>RE</label>
-              <input type="text" value={selectedRE} disabled />
+              {selectedREs.map(value => <input type="text" value={value} disabled />)}
             </div>
             <div className="preview-item">
               <h3>Identifiers</h3>
@@ -643,9 +763,14 @@ const FIURaiseRequest = () => {
               </table>
             </div>
           </div>
+          <div style={{display:"flex",justifyContent:"space-between", padding:"20px"}}>
+          <button className="submit-btn" onClick={()=> setPreview(false)}>
+            <Link> Back </Link>
+          </button>
           <button className="submit-btn" onClick={handleFinalSubmit}>
             <Link to="/inbox">Submit</Link>
           </button>
+          </div>
         </div>
       )}
     </div>

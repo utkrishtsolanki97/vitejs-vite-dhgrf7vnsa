@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './REOutbox.css';
 
-const REOutbox = () => {
+const REOutbox = ({ loggedInUser }) => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRequests, setFilteredRequests] = useState([]);
 
   useEffect(() => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const filteredRequests = storedRequests.filter(
-      (req) => req.action_taken === 1
+    const userRequests = storedRequests.filter(
+      (req) =>
+        req.selectedREs.some(re => re.reName === loggedInUser.userName) &&
+        (!req.action_on || !req.action_on.includes(loggedInUser.userName))
     );
-    setRequests(filteredRequests);
-    setFilteredRequests(filteredRequests);
-  }, []);
+    setRequests(userRequests);
+    setFilteredRequests(userRequests);
+  }, [loggedInUser.userName]);
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -43,8 +45,8 @@ const REOutbox = () => {
           <tr>
             <th>Srl No.</th>
             <th>Title</th>
-            <th>Req Id</th>
-            <th>Req By</th>
+            <th>Req ID</th>
+            <th>Requested By</th>
             <th>Priority</th>
             <th>ETA (End Date)</th>
             <th>View</th>
@@ -56,13 +58,13 @@ const REOutbox = () => {
               <td>{index + 1}</td>
               <td>{`FIU Notice ${req.selectedAction}`}</td>
               <td>
-                <b>FIU_{index + 1}</b>
+                <b>FIU_{req.id}</b>
               </td>
-              <td>System</td>
+              <td>{req.username}</td>
               <td>{req.priority}</td>
               <td>{req.endDate}</td>
               <td>
-                <Link to={`/preview/${index}`}>View</Link>
+                <Link to={`/preview/${req.id}`}>View</Link>
               </td>
             </tr>
           ))}
