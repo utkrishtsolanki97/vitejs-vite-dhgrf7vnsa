@@ -37,12 +37,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const isRERoute = location.pathname.startsWith('/re-');
-  const [loggedInUser, setLoggedInUser] = useState({ 
-    id: 3, 
-    userName: 'fiu', 
-    password: 'Admin',
-    role: 'FIU'
-  });
+  const [loggedInUser, setLoggedInUser] = useState();
 
   const handleLogout = () => {
     setLoggedInUser(null);
