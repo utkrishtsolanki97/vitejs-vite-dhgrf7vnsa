@@ -37,7 +37,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const isRERoute = location.pathname.startsWith('/re-');
-  const [loggedInUser, setLoggedInUser] = useState();
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   const handleLogout = () => {
     setLoggedInUser(null);
@@ -50,9 +50,9 @@ function App() {
         <>
           <div className="leftPanel">
             <ul>
-              {loggedInUser.role === 'RE' ? (
+              {loggedInUser?.role === 'RE' ? (
                 <>
-                  <li>Welconse {loggedInUser.userName}! ({loggedInUser.role})</li>
+                  <li>Welconse {loggedInUser?.userName}! ({loggedInUser?.role})</li>
                   <li className={location.pathname === '/re-inbox' ? 'active' : ''}>
                     <Link to="/re-inbox">Inbox</Link>
                   </li>
@@ -68,7 +68,7 @@ function App() {
                 </>
               ) : (
                 <>
-                <li>Welconse {loggedInUser.userName}! ({loggedInUser.role})</li>
+                <li>Welconse {loggedInUser?.userName}! ({loggedInUser?.role})</li>
                   <li className={location.pathname === '/inbox' ? 'active' : ''}>
                     <Link to="/inbox">Inbox</Link>
                   </li>
