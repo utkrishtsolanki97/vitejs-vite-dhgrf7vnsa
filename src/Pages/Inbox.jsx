@@ -19,7 +19,7 @@ const Inbox = ({ loggedInUser }) => {
     setFilteredRequests(userRequests);
     setRaisedRequestsCount(storedRequests.length);
     setClosedRequestsCount(
-      userRequests.filter((req) => req.closed_request === 1).length
+      storedRequests.filter((req) => req.close_request === 1 && req.username=== loggedInUser?.userName).length
     );
   }, [loggedInUser]);
 

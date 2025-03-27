@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Inbox.css';
 
-const Outbox = ({ loggedInUser }) => {
+const Outbox = ({ loggedInUser,archived }) => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRequests, setFilteredRequests] = useState([]);
 
   useEffect(() => {
+    console.log(archived);
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const userRequests = storedRequests.filter(request =>
+    const userRequests = archived === 'true' ? storedRequests.filter(request =>
       request.username === loggedInUser.userName && 
-      (!request.action_on || !request.action_on.includes(loggedInUser.userName))
+      (!request.close_request || request.close_request===1)
+    ) : storedRequests.filter(request =>
+      request.username === loggedInUser.userName && 
+      (!request.action_on || !request.action_on.includes(loggedInUser.userName)) && 
+      (!request.close_request)
     );
     setRequests(userRequests);
     setFilteredRequests(userRequests);
@@ -20,6 +25,7 @@ const Outbox = ({ loggedInUser }) => {
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
     setSearchTerm(term);
+    
     const filtered = requests.filter(
       (req) =>
         req.description.toLowerCase().includes(term) ||

@@ -76,6 +76,9 @@ function App() {
                     <Link to="/outbox">Outbox</Link>
                   </li>
                   <li className={location.pathname === '/profile' ? 'active' : ''}>
+                    <Link to="/archived-requests">Archived Requests</Link>
+                  </li>
+                  <li className={location.pathname === '/profile' ? 'active' : ''}>
                     <Link to="/profile">Profile</Link>
                   </li>
                   <li>
@@ -88,7 +91,8 @@ function App() {
           <div className="rightPanel">
             <Routes>
               <Route path="/inbox" element={<Inbox loggedInUser={loggedInUser} />} />
-              <Route path="/outbox" element={<Outbox loggedInUser={loggedInUser} />} />
+              <Route path="/outbox" element={<Outbox loggedInUser={loggedInUser}  archived="false"  />} />
+              <Route path="/archived-requests" element={<Outbox loggedInUser={loggedInUser} archived="true" />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/fiuhome" element={<FiuHome />} />
               <Route path="/fiu-raise-request" element={<FIURaiseRequest loggedInUser={loggedInUser} />} />
