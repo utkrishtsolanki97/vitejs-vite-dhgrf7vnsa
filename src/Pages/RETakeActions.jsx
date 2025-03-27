@@ -228,9 +228,10 @@ const RETakeActions = ({ loggedInUser }) => {
         Download as PDF
       </button>
       <br />
-      {data.selectedREs.filter(re => re.reName === loggedInUser.userName).map((re, reIndex) => (
-        <div key={reIndex} style={{ margin: "20px", padding: "20px", border: "1px solid black" }}>
+      {data.selectedREs.filter(re => re.reName === loggedInUser.userName).map((re, reIndex) => 
+        
           {re.reName === loggedInUser.userName && (
+            <div key={reIndex} style={{ margin: "20px", padding: "20px", border: "1px solid black" }}>
             <div>
               {re.reply && (
                 <div className="action-taken-section">
@@ -300,9 +301,10 @@ const RETakeActions = ({ loggedInUser }) => {
                 </div>
               )}
             </div>
+            </div>
           )}
-        </div>
-      ))}
+        
+      )}
       {data.selectedREs.filter(re => re.reName === loggedInUser.userName)[0].reply === '' && <div className="action-section">
         <div className="reply-section">
           <label>Reply</label>
