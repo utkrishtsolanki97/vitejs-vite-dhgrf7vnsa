@@ -65,7 +65,7 @@ const Inbox = ({ loggedInUser }) => {
             <th>Title</th>
             <th>Req ID</th>
             <th>Priority</th>
-            <th>RE Type (Count)</th>
+            <th>RE Type (Count of Requested RE's)</th>
             <th>Pending RE</th>
             <th>Action Taken RE</th>
             <th>End Date</th>

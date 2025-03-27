@@ -92,7 +92,7 @@ function App() {
             <Routes>
               <Route path="/inbox" element={<Inbox loggedInUser={loggedInUser} />} />
               <Route path="/outbox" element={<Outbox loggedInUser={loggedInUser}  archived="false"  />} />
-              <Route path="/archived-requests" element={<Outbox loggedInUser={loggedInUser} archived="true" />} />
+              
               <Route path="/profile" element={<Profile />} />
               <Route path="/fiuhome" element={<FiuHome />} />
               <Route path="/fiu-raise-request" element={<FIURaiseRequest loggedInUser={loggedInUser} />} />
@@ -100,6 +100,7 @@ function App() {
               <Route path="/re-priview/:id" element={<RETakeActions loggedInUser={loggedInUser} />} />
               <Route path="/re-inbox" element={<REInbox loggedInUser={loggedInUser} />} />
               <Route path="/re-outbox" element={<REOutbox loggedInUser={loggedInUser} />} />
+              <Route path="/archived-requests" element={<Outbox loggedInUser={loggedInUser} archived="true" />} />
             </Routes>
           </div>
         </>

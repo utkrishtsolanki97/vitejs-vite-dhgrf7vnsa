@@ -27,7 +27,8 @@
 
 .raise-request-link {
   padding: 10px 20px;
-  background-color: darkgrey;
+  background-color: black;
+margin : 10px; 
   color: white;
   border: none;
   border-radius: 4px;
@@ -36,7 +37,8 @@
 }
 
 .raise-request-link:hover {
-  background-color: darkgrey;
+  background-color: black;
+margin : 10px; 
 }
 
 .search-box {
@@ -69,7 +71,8 @@
 
 .requests-table button {
   padding: 5px 10px;
-  background-color: darkgrey;
+  background-color: black;
+margin : 10px; 
   color: white;
   border: none;
   border-radius: 4px;

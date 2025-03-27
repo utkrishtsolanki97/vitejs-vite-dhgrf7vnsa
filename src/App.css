@@ -63,6 +63,7 @@ body {
 
 .leftPanel ul li a:hover,
 .leftPanel ul li.active a {
-  background-color: darkgrey;
+  background-color: black;
+margin : 10px; 
   color: white;
 }

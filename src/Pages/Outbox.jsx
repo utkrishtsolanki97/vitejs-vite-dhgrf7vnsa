@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Inbox.css';
 
 const Outbox = ({ loggedInUser,archived }) => {
+  const navigate = useNavigate()
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRequests, setFilteredRequests] = useState([]);
 
   useEffect(() => {
-    console.log(archived);
+    console.log(archived,archived === 'true');
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
     const userRequests = archived === 'true' ? storedRequests.filter(request =>
       request.username === loggedInUser.userName && 
-      (!request.close_request || request.close_request===1)
+      ( request.close_request===1)
     ) : storedRequests.filter(request =>
       request.username === loggedInUser.userName && 
       (!request.action_on || !request.action_on.includes(loggedInUser.userName)) && 
@@ -21,6 +22,21 @@ const Outbox = ({ loggedInUser,archived }) => {
     setRequests(userRequests);
     setFilteredRequests(userRequests);
   }, [loggedInUser.userName]);
+
+  useEffect(() => {
+    console.log(archived,archived === 'true');
+    const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
+    const userRequests = archived === 'true' ? storedRequests.filter(request =>
+      request.username === loggedInUser.userName && 
+      ( request.close_request===1)
+    ) : storedRequests.filter(request =>
+      request.username === loggedInUser.userName && 
+      (!request.action_on || !request.action_on.includes(loggedInUser.userName)) && 
+      (!request.close_request)
+    );
+    setRequests(userRequests);
+    setFilteredRequests(userRequests);
+  }, [navigate]);
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -36,7 +52,7 @@ const Outbox = ({ loggedInUser,archived }) => {
 
   return (
     <div className="inbox">
-      <h1>Outbox</h1>
+      <h1>{archived==='true' ? 'Acrhived Requests' : 'Outbox'}</h1>
       <div className="search-box">
         <input
           type="text"
@@ -52,7 +68,7 @@ const Outbox = ({ loggedInUser,archived }) => {
             <th>Title</th>
             <th>Req ID</th>
             <th>Priority</th>
-            <th>RE Type (Count)</th>
+            <th>RE Type (Count of Requested RE's)</th>
             <th>Pending RE</th>
             <th>Action Taken RE</th>
             <th>End Date</th>
