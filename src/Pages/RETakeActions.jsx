@@ -10,12 +10,24 @@ const RETakeActions = ({ loggedInUser }) => {
   const [data, setData] = useState(null);
   const [acknowledged, setAcknowledged] = useState(false);
   const [takingAction, setTakingAction] = useState(false);
-  const [reply, setReply] = useState('');
   const [files, setFiles] = useState([]);
+  const [reply, setReply] = useState('');
+  const [actionTaken, setActionTaken] = useState('');
+
+  const handleActionChange = (event) => {
+
+    if (event.target.value === 'Others') {
+      setActionTaken('Others')
+    }
+    else {
+      setReply(event.target.value);
+    }
+  };
 
   useEffect(() => {
+    console.log(id);
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestData = storedRequests.find(req => req.id === parseInt(id));
+    const requestData = storedRequests.find(req => req.id === id);
     setData(requestData);
   }, [id]);
 
@@ -67,7 +79,7 @@ const RETakeActions = ({ loggedInUser }) => {
 
   const handleSubmit = () => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    const requestIndex = storedRequests.findIndex(req => req.id === id);
     if (requestIndex !== -1) {
       const request = storedRequests[requestIndex];
 
@@ -99,13 +111,14 @@ const RETakeActions = ({ loggedInUser }) => {
     }
   };
 
-  
+
   const handleRFISubmit = (rfi) => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    const requestIndex = storedRequests.findIndex(req => req.id === id);
+    console.log(requestIndex);
     if (requestIndex !== -1) {
       const request = storedRequests[requestIndex];
-  
+
       // Update the RFI reply and documents in the selectedREs object
       request.selectedREs = request.selectedREs.map(re => {
         if (re.reName === loggedInUser.userName) {
@@ -125,19 +138,19 @@ const RETakeActions = ({ loggedInUser }) => {
         }
         return re;
       });
-  
+
       // Remove the username from action_on
       request.action_on = request.action_on.filter(user => user !== loggedInUser.userName);
-  
+
       // Add 'fiu' to action_on if not already present
       if (!request.action_on.includes('fiu')) {
         request.action_on.push('fiu');
       }
-  
+
       // Update the request in localStorage
       storedRequests[requestIndex] = request;
       localStorage.setItem('requests', JSON.stringify(storedRequests));
-  
+
       navigate('/re-inbox');
     }
   };
@@ -147,11 +160,11 @@ const RETakeActions = ({ loggedInUser }) => {
   }
 
 
-  console.log(data?.selectedREs?.filter(re => re.reName === loggedInUser.userName)[0].reply === '');
+
   return (
     <div className="preview-section">
       <h2>
-        Request Number : <b>FIU_{id}</b>
+        Request Number : <b>{id}</b>
       </h2>
 
       <div className="preview-details">
@@ -204,7 +217,7 @@ const RETakeActions = ({ loggedInUser }) => {
         </div>
         <div className="preview-item">
           <label>End Date to Perform Action</label>
-          <input type="date" value={data.endDate} disabled />
+          <input value={data.endDate} disabled />
         </div>
         <div className="preview-item">
           <h3>Uploaded Files</h3>
@@ -281,10 +294,29 @@ const RETakeActions = ({ loggedInUser }) => {
                             ) : (
                               <div>
                                 <label>Reply</label>
-                                <textarea
-                                  value={reply}
-                                  onChange={(e) => setReply(e.target.value)}
-                                />
+                                <div>
+                                  <div className="reply-section">
+                                    <label>Action Taken</label>
+                                    <select value={reply} onChange={handleActionChange}>
+                                      <option value="">Select Action</option>
+                                      <option value="Freeze Account">Freeze Account</option>
+                                      <option value="Unfreeze Account">Unfreeze Account</option>
+                                      <option value="Debit Freeze">Debit Freeze</option>
+                                      <option value="Debit Unfreeze">Debit Unfreeze</option>
+                                      <option value="Others">Others</option>
+                                    </select>
+                                  </div>
+
+                                  {actionTaken === 'Others' && (
+                                    <div className="reply-section">
+                                      <label>Reply</label>
+                                      <textarea
+                                        value={reply}
+                                        onChange={(e) => setReply(e.target.value)}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
                                 <label>Upload Documents</label>
                                 <input type="file" multiple onChange={handleFileChange} />
                                 <button className="submit-btn" onClick={() => handleRFISubmit(rfi)}>
@@ -304,12 +336,28 @@ const RETakeActions = ({ loggedInUser }) => {
         </div>
       ))}
       {data.selectedREs.filter(re => re.reName === loggedInUser.userName)[0].reply === '' && <div className="action-section">
-        <div className="reply-section">
-          <label>Reply</label>
-          <textarea
-            value={reply}
-            onChange={(e) => setReply(e.target.value)}
-          />
+        <div>
+          <div className="reply-section">
+            <label>Action Taken</label>
+            <select value={reply} onChange={handleActionChange}>
+              <option value="">Select Action</option>
+              <option value="Freeze Account">Freeze Account</option>
+              <option value="Unfreeze Account">Unfreeze Account</option>
+              <option value="Debit Freeze">Debit Freeze</option>
+              <option value="Debit Unfreeze">Debit Unfreeze</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+
+          {actionTaken === 'Others' && (
+            <div className="reply-section">
+              <label>Reply</label>
+              <textarea
+                value={reply}
+                onChange={(e) => setReply(e.target.value)}
+              />
+            </div>
+          )}
         </div>
         <div className="upload-docs-section">
           <h3>Upload Supporting Docs</h3>

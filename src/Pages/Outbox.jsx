@@ -81,12 +81,12 @@ const Outbox = ({ loggedInUser,archived }) => {
               <td>{index + 1}</td>
               <td>{`FIU Notice ${req.selectedAction}`}</td>
               <td>
-                <b>FIU_{req.id}</b>
+                <b>{req.id}</b>
               </td>
               <td>{req.priority}</td>
               <td>{`${req.selectedReType} (${req.selectedREs.length})`}</td>
-              <td>{req.selectedREs.filter(re => !re.reply).length}</td>
-              <td>{req.selectedREs.filter(re => re.reply).length}</td>
+              <td>{req.selectedREs.filter(re => !re.reply).map(re=> re.name)}</td>
+              <td>{req.selectedREs.filter(re => re.reply).map(re=> re.name)}</td>
               <td>{req.endDate}</td>
               <td>
                 <Link to={`/preview/${req.id}`}>View</Link>

@@ -1,0 +1,329 @@
+
+
+.inbox {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  .inbox h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .request-counts {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .request-counts .raised-requests,
+  .request-counts .closed-requests {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .raise-request-button {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .raise-request-link {
+    padding: 10px 20px;
+    background-color: black;
+  margin : 10px; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .raise-request-link:hover {
+    background-color: black;
+  margin : 10px; 
+  }
+  
+  .search-box {
+    margin-bottom: 20px;
+  }
+  
+  .search-box input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .requests-table th,
+  .requests-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .requests-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .requests-table button {
+    padding: 5px 10px;
+    background-color: black;
+  margin : 10px; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .requests-table button:hover {
+    background-color: #45a049;
+  }
+  
+.fiu-raise-request {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  .header h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .select-re-details,
+  .identifiers-section,
+  .action-requested-section,
+  .upload-docs-section,
+  .preview-section {
+    margin-bottom: 20px;
+  }
+  
+  .select-re-details label,
+  .identifiers-section label,
+  .action-requested-section label,
+  .upload-docs-section label,
+  .preview-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .select-re-details select,
+  .identifiers-section select,
+  .identifiers-section input,
+  .action-requested-section select,
+  .action-requested-section input,
+  .action-requested-section textarea,
+  .upload-docs-section input,
+  .preview-section input,
+  .preview-section textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .identifiers-table,
+  .files-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+  }
+  
+  .identifiers-table th,
+  .files-table th,
+  .identifiers-table td,
+  .files-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .identifiers-table th,
+  .files-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .add-identifier-btn,
+  .submit-btn,
+  .preview-btn,
+  .files-table button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: black;
+    margin : 10px; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    a{
+      color: white;
+    }
+  }
+  
+  .add-identifier-btn:hover,
+  .submit-btn:hover,
+  .preview-btn:hover,
+  .files-table button:hover {
+    background-color: black;
+  margin : 10px; 
+  }
+  
+  .action-requested-section .action-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .action-requested-section .action-details > div {
+    margin-bottom: 10px;
+  }
+  
+  .upload-docs-section input[type='file'] {
+    margin-bottom: 10px;
+  }
+  
+  .preview-section .preview-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .preview-section .preview-item {
+    margin-bottom: 10px;
+  }
+  
+  .preview-section .preview-item input,
+  .preview-section .preview-item textarea {
+    background-color: #f9f9f9;
+    cursor: not-allowed;
+  }
+  
+  
+  .multi-select {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .multi-select div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .multi-select input[type='checkbox'] {
+    margin-right: 10px;
+  }
+  
+  .multi-select label {
+    font-weight: normal;
+    color: #333;
+  }
+  
+  .re-select
+    {
+      height: 80%;
+      overflow: auto;
+      padding: 20px;
+  }
+  
+  .re-select-header{
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      border-bottom: 1px solid black;
+  }
+  .request-tag{
+    input{
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  }
+
+  .fiu-raise-request {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  .header h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .search-filter {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .filters {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .filters select {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .requests-table th,
+  .requests-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .requests-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .priority-high {
+    background-color: #ffcccc;
+  }
+  
+  .priority-medium {
+    background-color: #fff0b3;
+  }
+  
+  .priority-low {
+    background-color: #ccffcc;
+  }
+  
+  .requests-table a {
+    color: blue;
+    text-decoration: none;
+  }
+  
+  .requests-table a:hover {
+    text-decoration: underline;
+  }

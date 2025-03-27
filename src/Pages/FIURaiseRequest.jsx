@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './FIURaiseRequest.css';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { addHours, format } from 'date-fns';
 
 const FIURaiseRequest = ({loggedInUser}) => {
+  const navigate = useNavigate()
   const [selectedReType, setSelectedReType] = useState('');
   const [selectedRE, setSelectedRE] = useState('');
   const [selectedREs, setSelectedREs] = useState([]);
@@ -11,6 +13,7 @@ const FIURaiseRequest = ({loggedInUser}) => {
   const [idCounter, setIdCounter] = useState(1);
   const [showActionRequired, setshowActionRequired] = useState(true);
   const [selectedAction, setSelectedAction] = useState('');
+  const [selectedKeyword, setSelectedKeyword] = useState('');
   const [otherAction, setOtherAction] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('');
@@ -21,8 +24,10 @@ const FIURaiseRequest = ({loggedInUser}) => {
 
   const reData = {
     'Virtual Asset Service Provider': [
-      'Test Virtual Asset Service Provider',
-      'Manendra Jain',
+      'MudreX',
+      'Binance',
+      'WazirX',
+      'Coin DCX'
     ],
     Bank: [
       'UCO Bank',
@@ -312,16 +317,16 @@ const FIURaiseRequest = ({loggedInUser}) => {
 
   const idTypes = [
     'VPA (Virtual Payment Address)',
-    'Account Number',
-    'Mobile Number',
     'Wallet Address',
-    'IFSC Code',
-    'aadhar card',
-    'pan',
-    'driving license',
+    'Transaction Hash',
+    'Mobile Number',
+    'Passport Number',
+    'Account Number',
+    'AADHAR Number',
+    'PAN',
     'Name',
-    'email',
-    'Others'
+    'Email',
+    'Others',
   ];
 
   // const handleAddIdentifier = () => {
@@ -355,11 +360,28 @@ const FIURaiseRequest = ({loggedInUser}) => {
   };
 
   const handlePriorityChange = (event) => {
-    setPriority(event.target.value);
-  };
+    const selectedPriority = event.target.value;
+    setPriority(selectedPriority);
+    console.log(selectedPriority);
 
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
+    let hoursToAdd;
+    switch (selectedPriority) {
+      case 'High':
+        hoursToAdd = 3;
+        break;
+      case 'Medium':
+        hoursToAdd = 12;
+        break;
+      case 'Low':
+        hoursToAdd = 24;
+        break;
+      default:
+        hoursToAdd = 0;
+    }
+
+    const newEndDate = format(addHours(new Date(), hoursToAdd), "yyyy-MM-dd'T'HH:mm");
+    console.log(newEndDate);
+    setEndDate(newEndDate);
   };
 
   const handleFileChange = (event) => {
@@ -421,9 +443,10 @@ const FIURaiseRequest = ({loggedInUser}) => {
     }));
     const action_on = selectedREs.map((re) => (re.replace(/\s+/g, '')));
   
+  const id = 'FIU_'+(existingData.length+1)+'_'+selectedKeyword
     // Create the new request object
     const newRequest = {
-      id: newId,
+      id: id,
       role: loggedInUser.role,
       username: loggedInUser.userName,
       selectedReType,
@@ -445,6 +468,7 @@ const FIURaiseRequest = ({loggedInUser}) => {
     localStorage.setItem('requests', JSON.stringify(existingData));
   
     console.log('Data saved to local storage:', newRequest);
+    navigate('/inbox')
   };
 
   return (
@@ -527,6 +551,11 @@ const FIURaiseRequest = ({loggedInUser}) => {
                 )}
               </div>
             </div>}
+
+            <div  className="request-tag">
+            <label>Request Tag</label>
+            <input type='text' value={selectedKeyword} onChange={(e)=>setSelectedKeyword(e.target.value)} />
+            </div>
           </div>
 
           <div className="identifiers-section">
@@ -603,11 +632,10 @@ const FIURaiseRequest = ({loggedInUser}) => {
                 <label>Action to be Performed</label>
                 <select value={selectedAction} onChange={handleActionChange}>
                   <option value="">Select an action</option>
-                  <option value="Freeze a account">Freeze a account</option>
-                  <option value="Hold an account">Hold an account</option>
-                  <option value="Freeze Transactions">
-                    Freeze Transactions
-                  </option>
+                  <option value="Freeze Account">Freeze Account</option>
+                  <option value="Unfreeze Account">Unfreeze Account</option>
+                  <option value="Debit Freeze">Debit Freeze</option>
+                  <option value="Debit Freeze">Debit Unfreeze</option>
                   <option value="Others">Others</option>
                 </select>
               </div>
@@ -644,9 +672,9 @@ const FIURaiseRequest = ({loggedInUser}) => {
               <div className="end-date">
                 <label>End Date to Perform Action</label>
                 <input
-                  type="date"
+                  // type="date"
                   value={endDate}
-                  onChange={handleEndDateChange}
+                  disabled
                 />
               </div>
             </div>
@@ -743,7 +771,7 @@ const FIURaiseRequest = ({loggedInUser}) => {
             </div>
             <div className="preview-item">
               <label>End Date to Perform Action</label>
-              <input type="date" value={endDate} disabled />
+              <input value={endDate} disabled />
             </div>
             <div className="preview-item">
               <h3>Uploaded Files</h3>
@@ -765,10 +793,10 @@ const FIURaiseRequest = ({loggedInUser}) => {
           </div>
           <div style={{display:"flex",justifyContent:"space-between", padding:"20px"}}>
           <button className="submit-btn" onClick={()=> setPreview(false)}>
-            <Link> Back </Link>
+             Back 
           </button>
           <button className="submit-btn" onClick={handleFinalSubmit}>
-            <Link to="/inbox">Submit</Link>
+            Submit
           </button>
           </div>
         </div>

@@ -16,7 +16,7 @@ const Login = ({ users, setLoggedInUser }) => {
     if (user) {
       setLoggedInUser(user);
       if (user.role==='FIU') {
-        navigate('/inbox');
+        navigate('/dashboard');
       }
       else{
         navigate('re-inbox')

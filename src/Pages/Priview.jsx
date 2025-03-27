@@ -11,7 +11,7 @@ const Preview = ({ loggedInUser }) => {
 
   useEffect(() => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestData = storedRequests.find(req => req.id === parseInt(id));
+    const requestData = storedRequests.find(req => req.id === id);
     setData(requestData);
   }, [id,showInfoRequestInput]);
 
@@ -58,7 +58,7 @@ const Preview = ({ loggedInUser }) => {
 
   const handleSubmitRequest = (reName) => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    const requestIndex = storedRequests.findIndex(req => req.id === id);
     if (requestIndex !== -1) {
       const request = storedRequests[requestIndex];
 
@@ -98,7 +98,7 @@ const Preview = ({ loggedInUser }) => {
 
   const handleCloseRequest = () => {
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    const requestIndex = storedRequests.findIndex(req => req.id === id);
     if (requestIndex !== -1) {
       const request = storedRequests[requestIndex];
 
@@ -120,7 +120,7 @@ const Preview = ({ loggedInUser }) => {
   const handleNoFurtherInfo = (reName) => {
     console.log(reName, loggedInUser.userName);
     const storedRequests = JSON.parse(localStorage.getItem('requests')) || [];
-    const requestIndex = storedRequests.findIndex(req => req.id === parseInt(id));
+    const requestIndex = storedRequests.findIndex(req => req.id === id);
     if (requestIndex !== -1) {
       const request = storedRequests[requestIndex];
 
@@ -138,7 +138,7 @@ const Preview = ({ loggedInUser }) => {
   return (
     <div className="preview-section">
       <h2>
-        Request Number : <b>FIU_{id}</b>
+        Request Number : <b>{id}</b>
       </h2>
 
       <div className="preview-details">
@@ -191,7 +191,7 @@ const Preview = ({ loggedInUser }) => {
         </div>
         <div className="preview-item">
           <label>End Date to Perform Action</label>
-          <input type="date" value={data.endDate} disabled />
+          <input  value={data.endDate} disabled />
         </div>
         <div className="preview-item">
           <h3>Uploaded Files</h3>

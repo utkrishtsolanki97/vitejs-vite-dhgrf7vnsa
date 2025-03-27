@@ -67,3 +67,13 @@ body {
 margin : 10px; 
   color: white;
 }
+
+.wireframe-section{
+  position: sticky;
+  top: 0;
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid black;
+  font-weight: bolder;
+  background-color: white;
+}
