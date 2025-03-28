@@ -54,7 +54,7 @@ function App() {
   return (
     <div>
       <div className='wireframe-section'>
-        <span>Application Wire Frame</span>
+        <span>Application Wire Frame(Prototype)</span>
       </div>
 
       <div className="appcontainer">
