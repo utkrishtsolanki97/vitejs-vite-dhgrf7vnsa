@@ -32,10 +32,10 @@ const Dashboard = ({ loggedInUser }) => {
     return `${hours}h ${minutes}m`;
   };
 
-  const uniqueRequestIds = [...new Set(requests.map(req => req.id))];
-  const uniqueRes = [...new Set(requests.flatMap(req => req.selectedREs.map(re => re.name)))];
-  const uniqueReTypes = [...new Set(requests.map(req => req.selectedReType))];
-  const uniquePriorities = [...new Set(requests.map(req => req.priority))];
+  const uniqueRequestIds = [...new Set(requests?.map(req => req.id))];
+  const uniqueRes = [...new Set(requests?.flatMap(req => req.selectedREs.map(re => re.name)))];
+  const uniqueReTypes = [...new Set(requests?.map(req => req.selectedReType))];
+  const uniquePriorities = [...new Set(requests?.map(req => req.priority))];
 
   const filteredRequests = requests.filter(req => {
     const matchesRequestId = filter.requestId ? req.id === filter.requestId : true;

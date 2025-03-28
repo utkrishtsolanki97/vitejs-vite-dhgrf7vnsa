@@ -16,12 +16,8 @@ const RETakeActions = ({ loggedInUser }) => {
 
   const handleActionChange = (event) => {
 
-    if (event.target.value === 'Others') {
-      setActionTaken('Others')
-    }
-    else {
-      setReply(event.target.value);
-    }
+    setReply(event.target.value);
+
   };
 
   useEffect(() => {
@@ -88,7 +84,7 @@ const RETakeActions = ({ loggedInUser }) => {
         if (re.reName === loggedInUser.userName) {
           return {
             ...re,
-            reply,
+            reply: reply === 'Others' ? actionTaken : reply,
             documents: files.map(file => file.name)
           };
         }
@@ -128,7 +124,7 @@ const RETakeActions = ({ loggedInUser }) => {
               if (rfiItem.id === rfi.id) {
                 return {
                   ...rfiItem,
-                  re_reply: reply,
+                  re_reply: reply === 'Others' ? actionTaken : reply,
                   re_docs: files.map(file => file.name)
                 };
               }
@@ -299,20 +295,22 @@ const RETakeActions = ({ loggedInUser }) => {
                                     <label>Action Taken</label>
                                     <select value={reply} onChange={handleActionChange}>
                                       <option value="">Select Action</option>
-                                      <option value="Freeze Account">Freeze Account</option>
-                                      <option value="Unfreeze Account">Unfreeze Account</option>
-                                      <option value="Debit Freeze">Debit Freeze</option>
-                                      <option value="Debit Unfreeze">Debit Unfreeze</option>
+                                      <option value="Account Freeze Completed">Account Freeze Completed</option>
+                                      <option value="Account Unfreeze Completed">Account Unfreeze Completed</option>
+                                      <option value="Debit Freeze Completed">Debit Freeze Completed</option>
+                                      <option value="Debit Unfreeze Completed">Debit Unfreeze Completed</option>
                                       <option value="Others">Others</option>
+                                      <option value="Additional Information Required">Additional Information Required</option>
+                                      
                                     </select>
                                   </div>
 
-                                  {actionTaken === 'Others' && (
+                                  {reply === 'Others' && (
                                     <div className="reply-section">
                                       <label>Reply</label>
                                       <textarea
-                                        value={reply}
-                                        onChange={(e) => setReply(e.target.value)}
+                                        value={actionTaken}
+                                        onChange={(e) => setActionTaken(e.target.value)}
                                       />
                                     </div>
                                   )}
@@ -341,20 +339,21 @@ const RETakeActions = ({ loggedInUser }) => {
             <label>Action Taken</label>
             <select value={reply} onChange={handleActionChange}>
               <option value="">Select Action</option>
-              <option value="Freeze Account">Freeze Account</option>
-              <option value="Unfreeze Account">Unfreeze Account</option>
-              <option value="Debit Freeze">Debit Freeze</option>
-              <option value="Debit Unfreeze">Debit Unfreeze</option>
+              <option value="Account Freeze Completed">Account Freeze Completed</option>
+              <option value="AccountUnfreeze Completed">Account Unfreeze Completed</option>
+              <option value="Debit Freeze Completed">Debit Freeze Completed</option>
+              <option value="Debit Unfreeze Completed">Debit Unfreeze Completed</option>
+              <option value="Additional Information Required">Additional Information Required</option>
               <option value="Others">Others</option>
             </select>
           </div>
 
-          {actionTaken === 'Others' && (
+          {reply === 'Others' && (
             <div className="reply-section">
               <label>Reply</label>
               <textarea
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
+                value={actionTaken}
+                onChange={(e) => setActionTaken(e.target.value)}
               />
             </div>
           )}
